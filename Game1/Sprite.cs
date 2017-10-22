@@ -4,7 +4,7 @@ using MonoGame.Framework;
 
 namespace Game1
 {
-    public abstract class Sprite
+    public abstract class Sprite : IPhysicalObject2D
     {
         public float X { get; set; }
         public float Y { get; set; }

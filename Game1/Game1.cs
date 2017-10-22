@@ -1,4 +1,6 @@
-﻿using Assignment3;
+﻿using System;
+using System.Collections.Generic;
+using Assignment3;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
@@ -51,6 +53,10 @@ namespace Game1
         /// </ summary >
         private IGenericList<Sprite> SpritesForDrawList = new GenericList<Sprite>();
 
+        public List<Wall> Walls { get; set; }
+
+        public List<Wall> Goals { get; set; }
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this)
@@ -88,18 +94,34 @@ namespace Game1
             Ball = new Ball(GameConstants.DefaultBallSize,
                 GameConstants.DefaultInitialBallSpeed, GameConstants.DefaultBallBumpSpeedIncreaseFactor)
             {
-                X = screenBounds.Width / 2f,
-                Y = screenBounds.Height / 2f
+                X = screenBounds.Width / 2f - GameConstants.DefaultBallSize / 2f,
+                Y = screenBounds.Height / 2f - GameConstants.DefaultBallSize / 2f
             };
 
             Background = new Background(screenBounds.Width, screenBounds.Height);
+
+            Walls = new List<Wall>()
+            {
+                // try with 100 for default wall size !
+                new Wall (- GameConstants.WallDefaultSize ,0,
+                    GameConstants.WallDefaultSize , screenBounds.Height ),
+                new Wall ( screenBounds.Right ,0, GameConstants.WallDefaultSize ,
+                    screenBounds.Height ),
+            };
+            Goals = new List<Wall>()
+            {
+                new Wall (0, screenBounds.Height , screenBounds .Width ,
+                    GameConstants.WallDefaultSize ),
+                new Wall ( screenBounds.Top ,- GameConstants.WallDefaultSize ,
+                    screenBounds.Width , GameConstants.WallDefaultSize ),
+            };
 
             // Add our game objects to the sprites that should be drawn collection .
             SpritesForDrawList.Add(Background);
             SpritesForDrawList.Add(PaddleBottom);
             SpritesForDrawList.Add(PaddleTop);
             SpritesForDrawList.Add(Ball);
-
+            
             base.Initialize();
         }
 
@@ -147,7 +169,70 @@ namespace Game1
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
+            var touchState = Keyboard.GetState();
+            var screenBounds = GraphicsDevice.Viewport.Bounds;
+
+            if (touchState.IsKeyDown(Keys.Left))
+            {
+                PaddleBottom.X = PaddleBottom.X - (float) (PaddleBottom.Speed *
+                         gameTime.ElapsedGameTime.TotalMilliseconds);
+            }
+            if (touchState.IsKeyDown(Keys.Right))
+            {
+                PaddleBottom.X = PaddleBottom.X + (float)(PaddleBottom.Speed *
+                         gameTime.ElapsedGameTime.TotalMilliseconds);
+            }
+            if (touchState.IsKeyDown(Keys.A))
+            {
+                PaddleTop.X = PaddleTop.X - (float)(PaddleTop.Speed *
+                         gameTime.ElapsedGameTime.TotalMilliseconds);
+            }
+            if (touchState.IsKeyDown(Keys.D))
+            {
+                PaddleTop.X = PaddleTop.X + (float)(PaddleTop.Speed *
+                         gameTime.ElapsedGameTime.TotalMilliseconds);
+            }
+
+            PaddleBottom.X = MathHelper.Clamp(PaddleBottom.X, 0, screenBounds.Width -
+                        PaddleBottom.Width);
+            PaddleTop.X = MathHelper.Clamp(PaddleTop.X, 0, screenBounds.Width -
+                        PaddleBottom.Width);
+
+            var ballPositionChange = Ball.Direction *
+                        (float)(gameTime.ElapsedGameTime.TotalMilliseconds * Ball.Speed);
+
+            Ball.X += ballPositionChange.X;
+
+            Ball.Y += ballPositionChange.Y;
+
+            foreach (var wall in Walls)
+            {
+                if (CollisionDetector.Overlaps(Ball, wall))
+                {
+                    Ball.Direction = Ball.Direction * new Vector2(-1, 1);
+                    Ball.Speed = Ball.Speed * GameConstants.DefaultBallBumpSpeedIncreaseFactor;
+                    continue;
+                }
+            }
+
+            foreach (var goal in Goals)
+            {
+                if (CollisionDetector.Overlaps(Ball, goal))
+                {
+                    HitSound.Play();
+                    Ball.X = screenBounds.Width / 2f - GameConstants.DefaultBallSize / 2f;
+                    Ball.Y = screenBounds.Height / 2f - GameConstants.DefaultBallSize / 2f;
+                    Ball.Speed = GameConstants.DefaultInitialBallSpeed;
+                }
+            }
+
+            if (CollisionDetector.Overlaps(Ball, PaddleBottom) || CollisionDetector.Overlaps(Ball, PaddleTop))
+            {
+                Ball.Direction = Ball.Direction * new Vector2(1, -1);
+                Ball.Speed = Ball.Speed * GameConstants.DefaultBallBumpSpeedIncreaseFactor;
+            }
+                
+
 
             base.Update(gameTime);
         }
