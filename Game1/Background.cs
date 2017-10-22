@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Pong
+namespace Game1
 {
     /// <summary >
     /// Game background representation

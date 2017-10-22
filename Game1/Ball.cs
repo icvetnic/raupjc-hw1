@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace Pong
+namespace Game1
 {
     public class Ball :Sprite
     {
@@ -8,7 +8,9 @@ namespace Pong
         /// Defines current ball speed in time .
         /// </ summary >
         public float Speed { get; set; }
+
         public float BumpSpeedIncreaseFactor { get; set; }
+
         /// <summary >
         /// Defines ball direction .
         /// Valid values ( -1 , -1) , (1 ,1) , (1 , -1) , ( -1 ,1).

@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Framework;
 
-namespace Pong
+namespace Game1
 {
     public abstract class Sprite
     {

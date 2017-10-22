@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Pong
+namespace Game1
 {
     /// <summary >
     /// Represents player paddle .
@@ -12,11 +12,13 @@ namespace Pong
         /// Current paddle speed in time
         /// </ summary >
         public float Speed { get; set; }
+
         public Paddle(int width, int height, float initialSpeed) : base(width,
             height)
         {
             Speed = initialSpeed;
         }
+
         /// <summary >
         /// Overriding draw method . Masking paddle texture with black color .
         /// </ summary >

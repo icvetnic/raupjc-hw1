@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Pong
+namespace Game1
 {
 #if WINDOWS || LINUX
     /// <summary>
