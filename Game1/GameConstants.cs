@@ -3,6 +3,7 @@
     public class GameConstants
     {
         public const float PaddleDefaulSpeed = 0.9f;
+        public const float PaddleMaxSpeed = 0.9f;
         public const int PaddleDefaultWidth = 200;
         public const int PaddleDefaulHeight = 20;
         public const float DefaultInitialBallSpeed = 0.4f;

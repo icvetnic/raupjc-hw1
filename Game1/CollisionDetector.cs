@@ -34,7 +34,7 @@
             }
             else if (narrow.X < wide.X)
             {
-                if (wide.X - narrow.X < narrow.Width) return false;
+                if (wide.X - narrow.X > narrow.Width) return false;
             }
 
             if (tall.Y >= small.Y)

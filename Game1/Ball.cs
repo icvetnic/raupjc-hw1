@@ -7,8 +7,12 @@ namespace Game1
         /// <summary >
         /// Defines current ball speed in time .
         /// </ summary >
-        public float Speed { get; set; }
-
+        private float _speed;
+        public float Speed
+        {
+            get { return _speed; }
+            set { _speed = (value >= GameConstants.PaddleMaxSpeed) ? GameConstants.PaddleMaxSpeed : value; } }
+        
         public float BumpSpeedIncreaseFactor { get; set; }
 
         /// <summary >
